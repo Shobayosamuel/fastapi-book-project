@@ -1,1 +1,1 @@
-web: bin/start-nginx gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app -b unix:/tmp/nginx.socket
+web: bin/start-nginx gunicorn main:app -k uvicorn.workers.UvicornWorker --bind 127.0.0.1:8000 --workers 4
