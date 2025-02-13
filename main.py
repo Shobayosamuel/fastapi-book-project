@@ -27,14 +27,14 @@ async def health_check():
     """Checks if server is active."""
     return {"status": "active"}
 
-if __name__ == "__main__":
-    import uvicorn
-    # Get port from environment variable or default to 8000
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=port,
-        reload=False,  # Disable reload in production
-        workers=4  # Number of worker processes
-    )
+# if __name__ == "__main__":
+#     import uvicorn
+#     # Get port from environment variable or default to 8000
+#     port = int(os.getenv("PORT", 8000))
+#     uvicorn.run(
+#         "main:app",
+#         host="0.0.0.0",
+#         port=port,
+#         reload=False,  # Disable reload in production
+#         workers=4  # Number of worker processes
+#     )
