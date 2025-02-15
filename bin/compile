@@ -15,18 +15,18 @@ apt-get update -qq && apt-get install -y -qq \
     pkg-config
 
 echo "-----> Downloading and installing OpenSSL"
-OPENSSL_DIR="$BUILD_DIR/openssl"
+OPENSSL_DIR="$HOME/openssl"  # Using $HOME instead of /app
 rm -rf $OPENSSL_DIR
 mkdir -p $OPENSSL_DIR
-cd $BUILD_DIR
+cd $HOME
 
 curl -fSL https://www.openssl.org/source/openssl-3.0.8.tar.gz -o openssl-3.0.8.tar.gz || { echo "OpenSSL download failed"; exit 1; }
 tar -xzf openssl-3.0.8.tar.gz
 cd openssl-3.0.8
-./config --prefix=$OPENSSL_DIR --openssldir=$OPENSSL_DIR
+./config --prefix=$OPENSSL_DIR --openssldir=$OPENSSL_DIR no-shared
 make clean
 make -j$(nproc) || { echo "OpenSSL make failed"; exit 1; }
-make install_sw || { echo "OpenSSL install failed"; exit 1; }
+make DESTDIR=$HOME install_sw || { echo "OpenSSL install failed"; exit 1; }
 
 echo "-----> Downloading and installing PCRE library"
 PCRE_DIR="$BUILD_DIR/pcre"
