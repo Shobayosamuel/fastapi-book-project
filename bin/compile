@@ -29,7 +29,7 @@ cd openssl-3.0.8
 ./config --prefix=$OPENSSL_DIR --openssldir=$OPENSSL_DIR no-shared
 make clean
 make -j$(nproc) || { echo "OpenSSL make failed"; exit 1; }
-make DESTDIR=$HOME install_sw || { echo "OpenSSL install failed"; exit 1; }
+make -j$(nproc) install || { echo "OpenSSL install failed"; exit 1; }
 
 echo "-----> Downloading and installing zlib"
 ZLIB_DIR="$HOME/zlib"
@@ -53,8 +53,8 @@ cd nginx-1.25.3
     --prefix=$NGINX_DIR \
     --with-http_ssl_module \
     --with-pcre \  # Changed to use system PCRE2
-    --with-openssl=$HOME/openssl-3.0.8 \
-    --with-zlib=$HOME/zlib-1.2.13 || { echo "Nginx configure failed"; exit 1; }
+    --with-openssl=$OPENSSL_DIR \
+    --with-zlib=$ZLIB_DIR || { echo "Nginx configure failed"; exit 1; }
 make -j$(nproc) || { echo "Nginx make failed"; exit 1; }
 make install || { echo "Nginx install failed"; exit 1; }
 
