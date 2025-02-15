@@ -1,38 +1,47 @@
 #!/bin/bash
+
 echo "-----> Installing dependencies"
-apt-get update -qq && apt-get install -y -qq build-essential zlib1g-dev libpcre3 libpcre3-dev
+apt-get update -qq && apt-get install -y -qq \
+    build-essential \
+    zlib1g-dev \
+    libpcre3 \
+    libpcre3-dev \
+    g++ \
+    curl \
+    pkg-config
 
 echo "-----> Downloading and installing OpenSSL"
 mkdir -p /app/openssl
-curl -s https://www.openssl.org/source/openssl-3.0.8.tar.gz -o openssl-3.0.8.tar.gz
-tar -xzf openssl-3.0.8.tar.gz -C /app/openssl --strip-components=1
+curl -fSL https://www.openssl.org/source/openssl-3.0.8.tar.gz -o openssl-3.0.8.tar.gz || { echo "OpenSSL download failed"; exit 1; }
+tar -xzf openssl-3.0.8.tar.gz -C /app/openssl --strip-components=1 || { echo "Failed to extract OpenSSL"; exit 1; }
 cd /app/openssl
 ./config --prefix=/app/openssl --openssldir=/app/openssl
-make -j$(nproc)
-make install
+make -j$(nproc) || { echo "OpenSSL make failed"; exit 1; }
+make install || { echo "OpenSSL install failed"; exit 1; }
 
 echo "-----> Downloading and installing PCRE library"
 mkdir -p /app/pcre
-curl -sL https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz/download -o pcre-8.45.tar.gz
-tar -xzf pcre-8.45.tar.gz -C /app/pcre --strip-components=1
+curl -fSL https://ftp.pcre.org/pub/pcre/pcre-8.45.tar.gz -o pcre-8.45.tar.gz || { echo "PCRE download failed"; exit 1; }
+tar -xzf pcre-8.45.tar.gz -C /app/pcre --strip-components=1 || { echo "Failed to extract PCRE"; exit 1; }
 cd /app/pcre
-./configure --prefix=/app/pcre
-make -j$(nproc)
-make install
+./configure --prefix=/app/pcre || { echo "PCRE configure failed"; exit 1; }
+make -j$(nproc) || { echo "PCRE make failed"; exit 1; }
+make install || { echo "PCRE install failed"; exit 1; }
 
 echo "-----> Downloading and installing zlib"
 mkdir -p /app/zlib
-curl -sL http://zlib.net/zlib-1.2.13.tar.gz -o zlib-1.2.13.tar.gz
-tar -xzf zlib-1.2.13.tar.gz -C /app/zlib --strip-components=1
+curl -fSL http://zlib.net/zlib-1.2.13.tar.gz -o zlib-1.2.13.tar.gz || { echo "zlib download failed"; exit 1; }
+tar -xzf zlib-1.2.13.tar.gz -C /app/zlib --strip-components=1 || { echo "Failed to extract zlib"; exit 1; }
 cd /app/zlib
-./configure --prefix=/app/zlib
-make -j$(nproc)
-make install
+./configure --prefix=/app/zlib || { echo "zlib configure failed"; exit 1; }
+make -j$(nproc) || { echo "zlib make failed"; exit 1; }
+make install || { echo "zlib install failed"; exit 1; }
 
 echo "-----> Installing nginx"
 mkdir -p /app/nginx
-curl -s https://nginx.org/download/nginx-1.25.3.tar.gz | tar -xz -C /app/nginx --strip-components=1
+curl -fSL https://nginx.org/download/nginx-1.25.3.tar.gz -o nginx-1.25.3.tar.gz || { echo "Nginx download failed"; exit 1; }
+tar -xzf nginx-1.25.3.tar.gz -C /app/nginx --strip-components=1 || { echo "Failed to extract Nginx"; exit 1; }
 cd /app/nginx
-./configure --prefix=/app/nginx --with-http_ssl_module --with-pcre=/app/pcre --with-openssl=/app/openssl --with-zlib=/app/zlib
-make -j$(nproc)
-make install
+./configure --prefix=/app/nginx --with-http_ssl_module --with-pcre=/app/pcre --with-openssl=/app/openssl --with-zlib=/app/zlib || { echo "Nginx configure failed"; exit 1; }
+make -j$(nproc) || { echo "Nginx make failed"; exit 1; }
+make install || { echo "Nginx install failed"; exit 1; }
