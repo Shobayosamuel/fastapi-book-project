@@ -1,6 +1,15 @@
 #!/bin/bash
 echo "-----> Installing dependencies"
-apt-get update -qq && apt-get install -y -qq build-essential zlib1g-dev libssl-dev
+apt-get update -qq && apt-get install -y -qq build-essential zlib1g-dev
+
+echo "-----> Downloading and installing OpenSSL"
+mkdir -p /app/openssl
+curl -s https://www.openssl.org/source/openssl-3.0.8.tar.gz -o openssl-3.0.8.tar.gz
+tar -xzf openssl-3.0.8.tar.gz -C /app/openssl --strip-components=1
+cd /app/openssl
+./config --prefix=/app/openssl --openssldir=/app/openssl
+make
+make install
 
 echo "-----> Downloading and installing PCRE library"
 mkdir -p /app/pcre
@@ -15,6 +24,6 @@ echo "-----> Installing nginx"
 mkdir -p /app/nginx
 curl -s https://nginx.org/download/nginx-1.25.3.tar.gz | tar -xz -C /app/nginx --strip-components=1
 cd /app/nginx
-./configure --prefix=/app/nginx --with-http_ssl_module --with-pcre=/app/pcre
+./configure --prefix=/app/nginx --with-http_ssl_module --with-pcre=/app/pcre --with-openssl=/app/openssl
 make
 make install
