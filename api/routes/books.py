@@ -56,6 +56,14 @@ async def get_books() -> OrderedDict[int, Book]:
                     "example": {"detail": "Book not found"}
                 }
             }
+        },
+        422: {
+            "description": "Invalid book ID format",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Book ID must be a valid integer"}
+                }
+            }
         }
     }
 )
