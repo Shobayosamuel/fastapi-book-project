@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "-----> Installing nginx"
+mkdir -p /app/nginx
+curl -s https://nginx.org/download/nginx-1.25.3.tar.gz | tar -xz -C /app/nginx --strip-components=1
+cd /app/nginx
+./configure --prefix=/app/nginx --with-http_ssl_module
+make
+make install
