@@ -1,0 +1,28 @@
+name: Deploy FastAPI App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: 206.189.185.109  # Your server IP
+          username: root          # Replace with a non-root user if needed
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root/fastapi-book-project
+            git pull origin main
+            source venv/bin/activate
+            pip install -r requirements.txt
+            sudo systemctl restart fastapi
+            sudo systemctl restart nginx
