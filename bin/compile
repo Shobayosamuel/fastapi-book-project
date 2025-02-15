@@ -1,11 +1,20 @@
 #!/bin/bash
 echo "-----> Installing dependencies"
-apt-get update -qq && apt-get install -y -qq build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev
+apt-get update -qq && apt-get install -y -qq build-essential zlib1g-dev libssl-dev
+
+echo "-----> Downloading and installing PCRE library"
+mkdir -p /app/pcre
+curl -s https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz/download -o pcre-8.45.tar.gz
+tar -xzf pcre-8.45.tar.gz -C /app/pcre --strip-components=1
+cd /app/pcre
+./configure --prefix=/app/pcre
+make
+make install
 
 echo "-----> Installing nginx"
 mkdir -p /app/nginx
 curl -s https://nginx.org/download/nginx-1.25.3.tar.gz | tar -xz -C /app/nginx --strip-components=1
 cd /app/nginx
-./configure --prefix=/app/nginx --with-http_ssl_module --with-pcre
+./configure --prefix=/app/nginx --with-http_ssl_module --with-pcre=/app/pcre
 make
 make install
