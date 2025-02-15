@@ -38,3 +38,6 @@ async def health_check():
 #         reload=False,  # Disable reload in production
 #         workers=4  # Number of worker processes
 #     )
+@app.get("/stage2")
+async def stage2():
+    return {"message": "welcome to stage 2"}
